@@ -1,0 +1,76 @@
+// pop without saving value
+// read from M afterward to make use of this
+getPopAddr():
+
+	@SP
+	M=M-1	// decrement SP
+	@SP
+	A=M		// dereference pointer (top of stack)
+	
+// quickly deallocate stack memory
+// the data will be lost!
+decStack(const):
+
+	loadDConst(const)
+	@SP
+	M=M-D	// SP -= const
+	
+// push D register onto the stack
+pushD():
+
+	@SP
+	A=M		// dereference pointer (top of stack)
+	M=D		// store D at top of stack
+	@SP
+	M=M+1	// increment SP
+	
+// pop stack onto D register
+popD ():
+
+	@SP
+	M=M-1	// decrement SP
+	@SP
+	A=M		// dereference pointer (top of stack)
+	D=M		// store it into D
+	
+// load a memory location into D register
+loadDMem (addr):
+
+	@addr
+	D=M		// D = M[addr]
+	
+// load a constant value into D register
+loadDConst (const):
+
+	@const
+	D=A		// D = const
+	
+// store D in memory
+storeD (addr):
+
+	@addr
+	M=D
+
+// push the value located at addr onto the stack
+push (addr):
+
+	loadDMem(addr)
+	pushD()
+	
+// push constant value onto the stack
+push (const):
+
+	loadDConst(const)
+	pushD()
+	
+// pop stack onto memory location
+pop (addr):
+
+	popD()
+	storeD(addr)
+	
+// pop 2 values into R13 and R14 (for arithmetic operations)
+pop2temp():
+
+	pop(R14)
+	pop(R13)
